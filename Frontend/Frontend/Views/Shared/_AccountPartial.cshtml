@@ -1,0 +1,23 @@
+﻿<a href="#" class="nav-link dropdown-toggle text-white" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="bi-person-circle text-white"></i>
+</a>
+<ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end bg-dark text-white" aria-labelledby="dropdownUser">
+    <li> 
+        <a href="#" class="dropdown-item" aria-label="UserAccount">
+            <i class="small text-secondary">Signed in as</i>
+            <p href="#" id="accountName">Account</p>
+        </a>
+    </li>
+    <li><a href="#" class="dropdown-item" aria-label="UserSettings">Settings</a></li>
+    <li><a asp-area="" asp-controller="Home" asp-action="Project" class="dropdown-item" aria-label="UserProjects">Projects</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a href="#" class="dropdown-item bg-danger" aria-label="UserSignOut" onclick="window.Logout()">Sign out</a></li>
+</ul>
+
+<script>
+    
+    $(window).on('login', function () {
+        $('#accountName').text(window.Username());
+    });
+
+</script>

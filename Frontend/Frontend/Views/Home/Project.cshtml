@@ -1,0 +1,59 @@
+﻿@model ProjectViewModel
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<div class="row m-1">
+    <div class="justify-content-start flex-column p-3 text-white bg-dark" style="width: auto;">
+        <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <i class="fs-3 bi bi-book text-white"></i>
+            <span class="fs-4">Projects</span>
+        </div>
+        <hr>
+        <ul id='projectContainer' class="nav nav-pills flex-column mb-auto gap-1">
+            <!--projectItemTemplate-->
+            <!--projectItemTemplate-->
+            <!--projectItemTemplate-->
+        </ul>
+    </div>
+    <div class="col-sm">
+        <a id='editButton' href="#" class="col-sm btn btn-dark">
+            <i class="fs-3 bi bi-pencil text-white"></i>
+        </a>
+
+        <a id='createButton' href="#" class="btn btn-success rounded-pill" data-bs-toggle="dropdown" aria-expanded="false" hidden>
+	        <i class="fs-4 bi bi-plus text-white"></i>
+        </a>
+        <div id='createContainer' class="dropdown-menu dropdown-menu-dark mt-2" aria-labelledby="createButton">
+            <!--createItemTemplate-->
+            <!--createItemTemplate-->
+            <!--createItemTemplate-->
+        </div>
+    </div>  
+</div>
+
+<script>
+    $(window).on('login', function (_) {
+        $('#createButton').removeAttr('hidden');
+    });
+    $(window).on('logout', function () {
+        $('#createButton').attr('hidden', 'true');
+    });
+</script>
+
+<template id='projectItemTemplate'>
+    <li class="nav-item">
+        <a id='projectNav{{Id}}' href="#" class="btn btn-outline-secondary text-white" aria-current="page" onclick="window.OnProjectSelected({{Id}})">
+            <i class="bi {{projectOwner id 'bi-pencil' 'bi-bookmark'}} text-white"></i> {{Name}}
+            <p class="small m-1"><i>by</i> </>{{Owner.Name}} <i>{{dateFormat Date}}</i></p>
+        </a>
+    </li>
+</template>
+
+<template id='createItemTemplate'>
+    <a class="dropdown-item" href="./Create?categoryId={{Id}}">{{Name}}</a>
+</template>
+
+@section scripts {
+<script src="~/js/project.js" type="module"></script>
+}

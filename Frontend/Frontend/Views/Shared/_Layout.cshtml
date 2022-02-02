@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+        <title>@ViewData["Title"] - Draconity Hub</title>
+
+        <link rel="stylesheet" href="~/css/main.css" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+        
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/js/tasks.js"></script>
+    </head>
+	<body>
+
+        <div class="page">
+            <div class="header bg-dark text-white">
+                <header class="">
+                    <div class="px-3 py-2">
+                        <div class="container">
+                            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                                <a asp-area="" asp-controller="Home" asp-action="Index" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none" aria-label="HeaderHome">
+                                    <i class="bi-house-fill text-white"></i>
+                                </a>
+            
+                                <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                                    <a asp-area="" asp-controller="Home" asp-action="Project" class="nav-link" aria-label="Projects">
+                                        <i class="bi-grid text-white"></i>
+                                    </a>
+                                    <li id="loggedIn" class="dropdown text-end" hidden>
+                                        <partial name="_AccountPartial" />
+                                    </li>
+                                    <li id="loggedOut" class="text-end">
+                                        <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#modalSignin" aria-label="LoggedOutUser">
+                                            <i class="bi-person-circle text-white"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            </div>
+
+            <script>
+                $(window).on('login', (_) => {
+                    $('#loggedIn').removeAttr('hidden');
+                    $('#loggedOut').attr('hidden', 'true');
+                });
+                $(window).on('logout', () => {
+                    $('#loggedIn').attr('hidden', 'true');
+                    $('#loggedOut').removeAttr('hidden');
+                });
+            </script>
+
+            <div class="content text-white" style="background-color: #07090E;">
+                <div id="container">
+                    <div id="frame"></div>
+                    <div class=panel>
+                        <div class=interface>
+                            @RenderBody()
+                        </div>
+                    </div>
+                    <div class=overlay>
+                        <div id='progressContainer' class=bottom>
+                            <div class="progress bg-black position-relative">
+                                <div id='progressBar' class="progress-bar bg-info" role="progressbar" style="width: 0%"></div>
+                                <div class="position-absolute small w-100" style="display: flex; justify-content: space-between; padding: 0 10px;">
+                                    <div id='progressNum' class="col text-white" style="flex-grow: 1; text-align: left;">
+                                        [0/0]
+                                    </div>
+                                    <div id='progressState' class="text-white" style="flex-grow: 4; text-align: center;">
+                                        Loading...
+                                    </div>
+                                    <div id='progressPercent' class="text-white" style="flex-grow: 1; text-align: right;">
+                                        0%
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer bg-dark text-white">
+                <footer class="">
+                    <div class="px-3 py-2">
+                        <div class="container">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <a asp-area="" asp-controller="Home" asp-action="Index" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1" aria-label="FooterHomeLink">
+                                        <i class="bi-asterisk"></i>
+                                    </a>
+                                    <span class="text-muted">Draconity 2021</span>
+                                </div>
+                        
+                                <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+                                    <li class="ms-3"><a class="text-muted" href="#" aria-label="YoutubeLink"><i class="bi-youtube"></i></a></li>
+                                    <li class="ms-3"><a class="text-muted" href="#" aria-label="TwitterLink"><i class="bi-twitter"></i></a></li>
+                                    <li class="ms-3"><a class="text-muted" href="#" aria-label="PatreonLink"><i class="bi-piggy-bank-fill"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        
+        <partial name="_SignUpPartial" />
+        
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/lib/handlebars/handlebars.min-v4.7.7.js"></script>
+        <script src="~/lib/three.js/three.min.js"></script>
+        <script src="~/js/site.js" type="module"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+	</body>
+</html>

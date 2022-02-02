@@ -1,0 +1,60 @@
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+div.page {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+div.header {
+    flex: 0 1 auto;
+}
+
+div.content {
+    flex: 1 1 auto;
+}
+
+div.footer {
+    flex: 0 1 40px;
+}
+
+div.panel {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+div.overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: flex;
+}
+
+div.bottom {
+    display: inline-block;
+    align-self: flex-end;
+    width: 100%;
+}
+
+div.interface {
+    padding: 10px;
+}
+
+#container {
+    position: relative;
+    height: 100%;
+}
+
+#frame {
+    position: fixed;
+}

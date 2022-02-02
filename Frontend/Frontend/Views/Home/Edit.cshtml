@@ -1,0 +1,37 @@
+﻿@model EditViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="row m-1">
+    <div class="justify-content-start flex-column p-3 text-white bg-dark" style="width: 256px;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <i class="fs-3 bi bi-chevron-left text-white"></i>
+            <span class="fs-4">Projects</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+    <li class="nav-item">
+        <a href="#" class="btn btn-secondary text-white">
+            <i class="bi bi-bookmark text-white">Option</i> 
+        </a>
+    </li>
+        </ul>
+    </div>
+
+    <div class="col">
+        <div id="featureContainer" class="d-grid gap-2 d-md-block">
+            <!--featureItemTemplate-->
+            <!--featureItemTemplate-->
+            <!--featureItemTemplate-->
+        </div>    
+    </div>  
+</div>
+
+<template id='featureItemTemplate'>
+    <a id='assetNav{{Id}}' href="#" class="btn btn-dark"><i class="fs-3 bi bi-book text-white"></i>{{Name}}</a>
+</template>
+
+@section scripts {
+<script src="~/js/edit.js" type="module"></script>
+}

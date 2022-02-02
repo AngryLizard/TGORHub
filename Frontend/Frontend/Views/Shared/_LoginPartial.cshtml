@@ -1,0 +1,45 @@
+﻿<form id='loginForm' class="needs-validation" novalidate onsubmit="return false">
+    <div class="form-floating mb-3">
+        <input type="email" class="form-control rounded-4 bg-secondary border-secondary bg-dark text-muted" id="loginEmail" placeholder="name@example.com" required>
+        <label for="loginEmail">Email address</label>
+        <div class="valid-feedback">
+            Nice!
+        </div>
+        <div class="invalid-feedback">
+            Please provide your email address.
+        </div>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="password" class="form-control rounded-4 bg-secondary border-secondary bg-dark text-muted" id="loginPassword" placeholder="Password" required>
+        <label for="loginPassword">Password</label>
+        <div class="valid-feedback">
+            Nice!
+        </div>
+        <div class="invalid-feedback">
+            Please provide your password.
+        </div>
+    </div>
+
+    <div id='loginWaitAlert' class="alert alert-info" role="alert" hidden>Signing in, please wait...</div>
+    <div id='loginErrorAlert' class="alert alert-danger" role="alert" hidden>
+        <h4 class="alert-heading">Oh no!</h4> Either password is wrong or user doesn't exist!
+    </div>
+    <button class="btn btn-lg btn-success w-100" type="submit" onclick="window.Login()">Login</button>
+                        
+    <small class="text-muted">By clicking Login, you agree to the terms of use.</small>
+                        
+    <hr class="my-4">
+    <h2 class="fs-5 fw-bold mb-3">Or use a third-party</h2>
+    <button class="w-100 py-2 mb-2 btn btn-outline-light rounded-4" type="submit">
+        <i class="bi-twitter"></i>
+        Login with Twitter
+    </button>
+    <button class="w-100 py-2 mb-2 btn btn-outline-primary rounded-4" type="submit">
+        <i class="bi-facebook"></i>
+        Login with Facebook
+    </button>
+    <button class="w-100 py-2 mb-2 btn btn-outline-secondary rounded-4" type="submit">
+        <i class="bi-github"></i>
+        Login with GitHub
+    </button>
+</form>

@@ -1,0 +1,1190 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Backend</name>
+    </assembly>
+    <members>
+        <member name="T:Backend.ScopeRequirement">
+            <summary>
+            Required permissions for a given scope
+            </summary>
+        </member>
+        <member name="P:Backend.ScopeRequirement.Issuer">
+            <summary>
+            JWT Issuer
+            </summary>
+        </member>
+        <member name="P:Backend.ScopeRequirement.Scope">
+            <summary>
+            Defined scope permission
+            </summary>
+        </member>
+        <member name="M:Backend.ScopeRequirement.#ctor(System.String,Backend.Models.Assets.PermissionType)">
+            
+        </member>
+        <member name="T:Backend.RequireScopeHandler">
+            <summary>
+            Permission handler for our scope permissions
+            </summary>
+        </member>
+        <member name="M:Backend.RequireScopeHandler.HandleRequirementAsync(Microsoft.AspNetCore.Authorization.AuthorizationHandlerContext,Backend.ScopeRequirement)">
+            <summary>
+            Check JWT token (claims) for current permission access
+            </summary>
+            <param name="context"></param>
+            <param name="requirement"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Backend.Context.ApplicationContext">
+            <summary>
+            Database context holding all data needed for account and content management.
+            </summary>
+        </member>
+        <member name="M:Backend.Context.ApplicationContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions{Backend.Context.ApplicationContext})">
+            <summary>
+            Customise according to extensions.
+            </summary>
+            <param name="options"></param>
+        </member>
+        <member name="M:Backend.Context.ApplicationContext.OnModelCreating(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <summary>
+            Customises database models
+            </summary>
+            <param name="modelBuilder"></param>
+        </member>
+        <member name="P:Backend.Context.ApplicationContext.Users">
+            <summary>
+            User accounts, identifiably via their email and hashed password
+            </summary>
+        </member>
+        <member name="P:Backend.Context.ApplicationContext.Groups">
+            <summary>
+            Groups define access rights to assets and projects.
+            </summary>
+        </member>
+        <member name="P:Backend.Context.ApplicationContext.Assets">
+            <summary>
+            Project assets that define a set of possible features.
+            </summary>
+        </member>
+        <member name="P:Backend.Context.ApplicationContext.Features">
+            <summary>
+            Project features consisting of multiple layers.
+            Each feature corresponds to an app page.
+            </summary>
+        </member>
+        <member name="P:Backend.Context.ApplicationContext.Projects">
+            <summary>
+            Projects contain reference a history of feature payloads.
+            Projects can only be owned by one user who has editing rights,
+            but multiple other people can view, download and export.
+            </summary>
+        </member>
+        <member name="P:Backend.Context.ApplicationContext.Payloads">
+            <summary>
+            Payloads contain project data for each feature and layer to build a model.
+            Payloads are stored deparately from projects so we can load them separately 
+            from the project description (and potentially later store them in a different key-value DB).
+            </summary>
+        </member>
+        <member name="P:Backend.Context.ApplicationContext.Categories">
+            <summary>
+            Categorys describe category assets that may describe species or objects to be used by project features. 
+            E.g. textures, meshes, shaders...
+            </summary>
+        </member>
+        <member name="M:Backend.Context.ApplicationContext.Hash(System.String)">
+            <summary>
+             Applies sha256 hashing to an input string.
+            </summary>
+            <param name="text">string to hash</param>
+            <returns>string with applied sha256 hashing</returns>
+        </member>
+        <member name="M:Backend.Context.ApplicationContext.GeneratePayload(Backend.Models.AssetModel)">
+            <summary>
+            Generates a payload from a asset.
+            </summary>
+            <param name="asset"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Backend.Context.ApplicationContext.HasEntries">
+            <summary>
+            Check whether any table has any entries
+            </summary>
+        </member>
+        <member name="M:Backend.Context.ApplicationContext.Seed">
+            <summary>
+            Initialise a system user and some dummy content.
+            </summary>
+        </member>
+        <member name="T:Backend.Context.BackendContext">
+            <summary>
+            Base for database context classes, contains logic for seeding.
+            </summary>
+        </member>
+        <member name="M:Backend.Context.BackendContext.#ctor(Microsoft.EntityFrameworkCore.DbContextOptions)">
+            
+        </member>
+        <member name="M:Backend.Context.BackendContext.Seed``1(Microsoft.Extensions.DependencyInjection.IServiceScope)">
+            <summary>
+            Populate the database with entries if empty.
+            </summary>
+            <assetparam name="Context">Context asset to seed</assetparam>
+            <param name="scope">Scope to seed into</param>
+        </member>
+        <member name="M:Backend.Context.BackendContext.HasEntries">
+            <summary>
+            Whether the database is already populated.
+            </summary>
+            <returns>True if the database has already been populated</returns>
+        </member>
+        <member name="M:Backend.Context.BackendContext.Seed">
+            <summary>
+            Inser^ts entries into this database.
+            </summary>
+        </member>
+        <member name="T:Backend.Controllers.AccountController">
+            <summary>
+            Controller for all user account related queries:
+            Register, login, group management
+            </summary>
+        </member>
+        <member name="F:Backend.Controllers.AccountController.ScopeClaim">
+            <summary>
+            Claim key used for permissions
+            </summary>
+        </member>
+        <member name="F:Backend.Controllers.AccountController.UserClaim">
+            <summary>
+            Claim key used for user identification
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AccountController.#ctor(Microsoft.Extensions.Configuration.IConfiguration,Backend.Context.ApplicationContext)">
+            
+        </member>
+        <member name="M:Backend.Controllers.AccountController.Register(Backend.Models.Requests.RegisterRequest)">
+            <summary>
+            Register new user. Users are identified via email and the password is hashed immediately.
+            Default with no special access and user-level permissions.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AccountController.Login(Backend.Models.Requests.LoginRequest)">
+            <summary>
+            Retreive access token from user login.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AccountController.Validate">
+            <summary>
+            Validate whether user has valid token, return user information.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AccountController.GetUsers">
+            <summary>
+            Get a list of all registered users.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AccountController.AddPermission(System.Int64,Backend.Models.Assets.PermissionType)">
+            <summary>
+            Add access rights to a user.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AccountController.RemovePermission(System.Int64,Backend.Models.Assets.PermissionType)">
+            <summary>
+            Remove access rights from a user.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AccountController.AddUserToGroup(System.Int64,System.Int64)">
+            <summary>
+            Add a user into a group.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AccountController.RemoveUserFromGroup(System.Int64,System.Int64)">
+            <summary>
+            Remove a user from a group.
+            </summary>
+        </member>
+        <member name="T:Backend.Controllers.AssetController">
+            <summary>
+            Controller for asset management
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.#ctor(Backend.Context.ApplicationContext)">
+            
+        </member>
+        <member name="M:Backend.Controllers.AssetController.GetAsset(System.Int64)">
+            <summary>
+            Get asset.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.AdminAssets">
+            <summary>
+            Get all assets.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.GetAssets(System.Int64)">
+            <summary>
+            Get assets that are usable by the calling user.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.CreateAsset(System.Int64,Backend.Models.Requests.CreateAssetRequest)">
+            <summary>
+            Create new asset
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.DeleteAsset(System.Int64)">
+            <summary>
+            Delete a asset
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.GetDefault(System.Int64)">
+            <summary>
+            Get default payload for this asset
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.SetAssetVisibility(System.Int64,Backend.Models.Requests.VisibilityRequest)">
+            <summary>
+            Set asset visibility
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.GetFeatures(System.Int64)">
+            <summary>
+            Get all features that are used by a given asset.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.AddFeatureToAsset(System.Int64,System.Int64)">
+            <summary>
+            Add a feature to a asset.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.RemoveFeatureFromAsset(System.Int64,System.Int64)">
+            <summary>
+            Remove a feature from a asset.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.AddAssetToGroup(System.Int64,System.Int64)">
+            <summary>
+            Add a user into a group.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.RemoveAssetFromGroup(System.Int64,System.Int64)">
+            <summary>
+            Remove a user from a group.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.AssetController.DownloadFile(System.Int64)">
+            <summary>
+            Download asset
+            </summary>
+        </member>
+        <member name="T:Backend.Controllers.BackendController">
+            <summary>
+            Base class for API controllers.
+            Contains a bunch of helpful helper functions to do with user access.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.BackendController.GetUserId">
+            <summary>
+            Get user id associated with current token
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.BackendController.HasAssetAccess(Backend.Models.AssetModel,Backend.Models.UserModel)">
+            <summary>
+            Whether given user has access to given asset, 
+            which is the case if any of the following is true:
+            1) Asset is public
+            2) User has access
+            3) Any group the user is part of has access
+            </summary>
+            <param name="asset">asset to check access to</param>
+            <param name="user">user to check access for</param>
+            <returns>Whether user has access to the asset</returns>
+        </member>
+        <member name="M:Backend.Controllers.BackendController.HasProjectAccess(Backend.Models.ProjectModel,Backend.Models.UserModel)">
+            <summary>
+            Whether given user has access to given project, 
+            which is the case if any of the following is true:
+            1) Project is public
+            2) User has access
+            3) User owns the project
+            3) Any group the user is part of has access
+            </summary>
+            <param name="project">project to check access to</param>
+            <param name="user">user to check access for</param>
+            <returns>Whether user has access to the project</returns>
+        </member>
+        <member name="M:Backend.Controllers.BackendController.CanEditProject(Backend.Models.ProjectModel,Backend.Models.UserModel)">
+            <summary>
+            Whether given user has write access to given project, 
+            which is the case if the user owns a project and
+            has access to the project asset.
+            </summary>
+            <param name="project">project to check access to</param>
+            <param name="user">user to check access for</param>
+            <returns>Whether user has access to the project</returns>
+        </member>
+        <member name="T:Backend.Controllers.CategoryController">
+            <summary>
+            Controller for category management.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.CategoryController.#ctor(Backend.Context.ApplicationContext)">
+            
+        </member>
+        <member name="M:Backend.Controllers.CategoryController.AdminCategories">
+            <summary>
+            Get all categories
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.CategoryController.GetCategory(System.Int64)">
+            <summary>
+            Get category
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.CategoryController.GetCategories(System.Int64)">
+            <summary>
+            Get categories for given feature
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.CategoryController.ListRootCategories">
+            <summary>
+            Get all root categories
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.CategoryController.CreateCategory(Backend.Models.Requests.CreateCategoryRequest)">
+            <summary>
+            Create new category
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.CategoryController.DeleteCategory(System.Int64)">
+            <summary>
+            Delete category
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.CategoryController.SetDefaultAsset(System.Int64,System.Int64)">
+            <summary>
+            Set category default asset.
+            Careful: This is the only way one could expose a non-public asset to the public,
+            if the asset is public but anything trying to access this category is not.
+            </summary>
+        </member>
+        <member name="T:Backend.Controllers.FeatureController">
+            <summary>
+            Controller for project features.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.FeatureController.#ctor(Backend.Context.ApplicationContext)">
+            
+        </member>
+        <member name="M:Backend.Controllers.FeatureController.AdminFeatures">
+            <summary>
+            Get all features
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.FeatureController.CreateFeature(Backend.Models.Requests.CreateFeatureRequest)">
+            <summary>
+            Create new asset
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.FeatureController.DeleteFeature(System.Int64)">
+            <summary>
+            Delete a feature
+            </summary>
+        </member>
+        <member name="T:Backend.Controllers.GroupController">
+            <summary>
+            Controller for group management
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.GroupController.#ctor(Backend.Context.ApplicationContext)">
+            
+        </member>
+        <member name="M:Backend.Controllers.GroupController.GetGroup(System.Int64)">
+            <summary>
+            Get group information if available to current user
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.GroupController.AdminGroups">
+            <summary>
+            Get a list of all groups.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.GroupController.CreateGroup(Backend.Models.Requests.CreateGroupRequest)">
+            <summary>
+            Create new group
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.GroupController.DeleteGroup(System.Int64)">
+            <summary>
+            Delete a group
+            </summary>
+        </member>
+        <member name="T:Backend.Controllers.ProjectController">
+            <summary>
+            Controller for project management
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.#ctor(Backend.Context.ApplicationContext)">
+            
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.GetProject(System.Int64)">
+            <summary>
+            Get project if accessible by the current user
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.AdminAssets">
+            <summary>
+            Get all projects
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.GetVisibleProjects">
+            <summary>
+            Get all projects visible for calling user.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.GetEditableProjects">
+            <summary>
+            Get all projects owned by calling user.
+            These projects can be modified by the user.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.CreateProject(System.Int64,Backend.Models.Requests.CreateProjectRequest)">
+            <summary>
+            Create new project of a given asset for calling user
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.GetPayload(System.Int64)">
+            <summary>
+            Get latest payload for a given project
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.SavePayload(System.Int64,Backend.Models.Requests.CreatePayloadRequest)">
+            <summary>
+            Save new payload for a given project
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.SuspendProject(System.Int64)">
+            <summary>
+            Suspend project (we usually don't delete projects, just make them invisible)
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.SetProjectVisibility(System.Int64,Backend.Models.Requests.VisibilityRequest)">
+            <summary>
+            Set project visibility
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.DeleteProject(System.Int64)">
+            <summary>
+            Delete a project if calling user owns it.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.AddProjectToGroup(System.Int64,System.Int64)">
+            <summary>
+            Add a user into a group.
+            </summary>
+        </member>
+        <member name="M:Backend.Controllers.ProjectController.RemoveProjectFromGroup(System.Int64,System.Int64)">
+            <summary>
+            Remove a user from a group.
+            </summary>
+        </member>
+        <member name="T:Backend.EntityJsonConverter`1">
+            <summary>
+            Define the way all our entity Types are converted to and from json for API output
+            </summary>
+            <Typeparam name="EntityType"></Typeparam>
+        </member>
+        <member name="M:Backend.EntityJsonConverter`1.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Generate empty Type from entity data.
+            </summary>
+            <param name="reader"></param>
+            <param name="typeToConvert"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Backend.EntityJsonConverter`1.Write(System.Text.Json.Utf8JsonWriter,`0,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            Write only id, name and date insteadof whole model.
+            </summary>
+            <param name="writer"></param>
+            <param name="entity"></param>
+            <param name="options"></param>
+        </member>
+        <member name="M:Backend.EntityJsonConverter`1.CanConvert(System.Type)">
+            <summary>
+            All entity Types are allowed
+            </summary>
+            <param name="TypeToConvert"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Backend.EntityListJsonConverter`1">
+            <summary>
+            List-version of our entity Type conversion
+            </summary>
+            <Typeparam name="EntityType"></Typeparam>
+        </member>
+        <member name="M:Backend.EntityListJsonConverter`1.Read(System.Text.Json.Utf8JsonReader@,System.Type,System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            User our custom entity Type conversion for all list items
+            </summary>
+            <param name="reader"></param>
+            <param name="TypeToConvert"></param>
+            <param name="options"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Backend.EntityListJsonConverter`1.Write(System.Text.Json.Utf8JsonWriter,System.Collections.Generic.ICollection{`0},System.Text.Json.JsonSerializerOptions)">
+            <summary>
+            User our custom entity Type conversion for all list items
+            </summary>
+            <param name="writer"></param>
+            <param name="entities"></param>
+            <param name="options"></param>
+        </member>
+        <member name="M:Backend.EntityListJsonConverter`1.CanConvert(System.Type)">
+            <summary>
+            All entity Type lists are allowed
+            </summary>
+            <param name="TypeToConvert"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Backend.Models.AssetModel">
+            <summary>
+            Project asset defines what features are available.
+            Access to assets can be restricted to certain users or groups.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.AssetModel.Creator">
+            <summary>
+            Author of this asset, mostly used for branding purposes
+            </summary>
+        </member>
+        <member name="P:Backend.Models.AssetModel.Visibility">
+            <summary>
+            Whether this asset is accessible to everyone
+            </summary>
+        </member>
+        <member name="P:Backend.Models.AssetModel.Url">
+            <summary>
+            Absolute path to corresponding file.
+            Not accessibly other than through the respective asset endpoint.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.AssetModel.Params">
+            <summary>
+            Parameters to the loader application in json format.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.AssetModel.Category">
+            <summary>
+            Category of this asset
+            </summary>
+        </member>
+        <member name="P:Backend.Models.AssetModel.Default">
+            <summary>
+            Default payload for this asset.
+            All zero if null.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.AssetModel.Features">
+            <summary>
+            Feaures supported by this asset.
+            These are not returned with the asset but have to be retreived 
+            by a separate query where they're ordered.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.AssetModel.UserAccess">
+            <summary>
+            Navigation property.
+            Users that have access to this Asset.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.AssetModel.GroupAccess">
+            <summary>
+            Navigation property.
+            Groups that have access to this Asset.
+            </summary>
+        </member>
+        <member name="T:Backend.Models.CategoryModel">
+            <summary>
+            Groups assets into different categories so we can define which assets are available for which project feature.
+            Also defines file extension.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.CategoryModel.Root">
+            <summary>
+            Whether this a root category that shows up when creating projects
+            </summary>
+        </member>
+        <member name="P:Backend.Models.CategoryModel.Priority">
+            <summary>
+            Categories are ordered from highest to lowest priority.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.CategoryModel.Loader">
+            <summary>
+            Loader for this category
+            </summary>
+        </member>
+        <member name="P:Backend.Models.CategoryModel.Params">
+            <summary>
+            Parameters to the loader application in json format.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.CategoryModel.Default">
+            <summary>
+            Default asset for this category. 
+            If none is defined this category is optional.
+            </summary>
+        </member>
+        <member name="T:Backend.Models.CredentialsModel">
+            <summary>
+            User extension for credentials used by login.
+            These credentials should preferably never be returned by any API request.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.CredentialsModel.Email">
+            <summary>
+            Email used to identify user. This email is unique in the user database.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.CredentialsModel.Password">
+            <summary>
+            Hashed password used to login
+            </summary>
+        </member>
+        <member name="T:Backend.Models.FeatureData">
+            <summary>
+            Payload containing user customisation of a feature
+            </summary>
+        </member>
+        <member name="P:Backend.Models.FeatureData.Layers">
+            <summary>
+            List of customised layers
+            </summary>
+        </member>
+        <member name="T:Backend.Models.LayerData">
+            <summary>
+            Payload for one feature layer.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.LayerData.Assets">
+            <summary>
+            List of asset payloads
+            </summary>
+        </member>
+        <member name="P:Backend.Models.LayerData.Floats">
+            <summary>
+            List of float values
+            </summary>
+        </member>
+        <member name="P:Backend.Models.LayerData.Integers">
+            <summary>
+            List of integer values
+            </summary>
+        </member>
+        <member name="T:Backend.Models.PayloadData">
+            <summary>
+            Payload for one category layer.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.PayloadData.Asset">
+            <summary>
+            Asset used by this payload
+            </summary>
+        </member>
+        <member name="P:Backend.Models.PayloadData.Features">
+            <summary>
+            List of customised features.
+            </summary>
+        </member>
+        <member name="T:Backend.Models.EntityModel">
+            <summary>
+            Base class for all identifiable objects in the application database.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.EntityModel.Id">
+            <summary>
+            Unique identifier for this entity.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.EntityModel.Name">
+            <summary>
+            Display name for this entity.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.EntityModel.Date">
+            <summary>
+            Timestamp for creation / last edit,
+            </summary>
+        </member>
+        <member name="T:Backend.Models.FeatureModel">
+            <summary>
+            Every feature describes a customisation step for a project.
+            Features support layers which hold by the user per-project customisable data.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.FeatureModel.Priority">
+            <summary>
+            Features are applied from highest to lowest priority.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.FeatureModel.App">
+            <summary>
+            Frontend application used by this feature.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.FeatureModel.Params">
+            <summary>
+            Parameters to the frontend application in json format.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.FeatureModel.MinLayers">
+            <summary>
+            Minimum amount of layers
+            </summary>
+        </member>
+        <member name="P:Backend.Models.FeatureModel.MaxLayers">
+            <summary>
+            Maximum amount of layers
+            </summary>
+        </member>
+        <member name="P:Backend.Models.FeatureModel.Categories">
+            <summary>
+            Asset categories that need to be supplied per feature layer.
+            These are not returned with the feature but have to be retreived 
+            by a separate query where they're ordered.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.FeatureModel.Floats">
+            <summary>
+            Float numbers that need to be supplied per feature layer.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.FeatureModel.Integers">
+            <summary>
+            Integer numbers that need to be supplied per feature layer.
+            Might also be used for flags/booleans/rgba.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.FeatureModel.OwningAssets">
+            <summary>
+            Navigation property.
+            Assets supported by this feature.
+            </summary>
+        </member>
+        <member name="T:Backend.Models.GroupModel">
+            <summary>
+            Groups provide access to assets or projects to included users.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.GroupModel.AssetAccess">
+            <summary>
+            Assets this group has access to
+            </summary>
+        </member>
+        <member name="P:Backend.Models.GroupModel.ProjectAccess">
+            <summary>
+            Projects this group has access to
+            </summary>
+        </member>
+        <member name="P:Backend.Models.GroupModel.UserAccess">
+            <summary>
+            Navigation property.
+            Users that belong to this group.
+            </summary>
+        </member>
+        <member name="T:Backend.Models.PayloadModel">
+            <summary>
+            Payload containing user customisation of a whole project
+            </summary>
+        </member>
+        <member name="P:Backend.Models.PayloadModel.Project">
+            <summary>
+            Project this payload belongs to
+            </summary>
+        </member>
+        <member name="P:Backend.Models.PayloadModel.Data">
+            <summary>
+            Customised data. This is configured to be converted into a json string
+            So the ordering of all lists is maintained.
+            TODO: May later be stored in a key-value store instead for better efficiency.
+            </summary>
+        </member>
+        <member name="T:Backend.Models.ProjectModel">
+            <summary>
+            Project description
+            </summary>
+        </member>
+        <member name="P:Backend.Models.ProjectModel.Visibility">
+            <summary>
+            Whether this project is accessible to everyone
+            </summary>
+        </member>
+        <member name="P:Backend.Models.ProjectModel.Suspended">
+            <summary>
+            Projects are suspended instead of deleted to avoid losing user data.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.ProjectModel.Category">
+            <summary>
+            Category this project was spawned from.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.ProjectModel.Owner">
+            <summary>
+            Owning user, only user that may edit this project
+            </summary>
+        </member>
+        <member name="P:Backend.Models.ProjectModel.UserAccess">
+            <summary>
+            Navigation property.
+            Users that have access to this project.
+            </summary>
+        </member>
+        <member name="P:Backend.Models.ProjectModel.GroupAccess">
+            <summary>
+            Navigation property.
+            Groups that have access to this project.
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Requests.CreateAssetRequest">
+            <summary>
+            Request used for asset creation
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateAssetRequest.CreatorId">
+            <summary>
+            Creator of this asset for branding purposes
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateAssetRequest.Url">
+            <summary>
+            File path for this asset
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateAssetRequest.Params">
+            <summary>
+            Loader parameters
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Requests.CreateCategoryRequest">
+            <summary>
+            Request used for category creation
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateCategoryRequest.Root">
+            <summary>
+            Whether this category can be used to create new projects
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateCategoryRequest.Priority">
+            <summary>
+            Higher priority categories get listed first
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateCategoryRequest.Loader">
+            <summary>
+            Loader identifier
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateCategoryRequest.Params">
+            <summary>
+            Loader parameters
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Requests.CreateEntityRequest">
+            <summary>
+            Request used for all entity creation
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateEntityRequest.Name">
+            <summary>
+            Desired display name
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Requests.CreateFeatureRequest">
+            <summary>
+            Request used for feature creation
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateFeatureRequest.Priority">
+            <summary>
+            Higher priority features get applied first
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateFeatureRequest.Floats">
+            <summary>
+            Number of float parameters for each layer
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateFeatureRequest.Integers">
+            <summary>
+            Number of integer parameters for each layer
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateFeatureRequest.CategoryIds">
+            <summary>
+            Number of category parameters for each layer
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateFeatureRequest.MinLayers">
+            <summary>
+            Minimum number of layers allowed
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateFeatureRequest.MaxLayers">
+            <summary>
+            Maxiumum number of layers allowed
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateFeatureRequest.App">
+            <summary>
+            Application identifier
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreateFeatureRequest.Params">
+            <summary>
+            Application parameters
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Requests.CreateGroupRequest">
+            <summary>
+            Request used for group creation
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Requests.CreatePayloadRequest">
+            <summary>
+            Request used for payload creation
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.CreatePayloadRequest.Data">
+            <summary>
+            Data for this payload
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Requests.CreateProjectRequest">
+            <summary>
+            Request used for project creation
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Requests.LoginRequest">
+            <summary>
+            Login request
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.LoginRequest.Email">
+            <summary>
+            Login email to identify user
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.LoginRequest.Password">
+            <summary>
+            Password (usually already hashed by frontend)
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Requests.RegisterRequest">
+            <summary>
+            Registration request
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.RegisterRequest.Username">
+            <summary>
+            Desired display name
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.RegisterRequest.Email">
+            <summary>
+            Email used by the user (unique per database)
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.RegisterRequest.Password">
+            <summary>
+            Password to be used (usually already hashed by frontend)
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Requests.VisibilityRequest">
+            <summary>
+            Request to set an object to public or private
+            </summary>
+        </member>
+        <member name="P:Backend.Models.Requests.VisibilityRequest.Visibility">
+            <summary>
+            Whether to set the object to public or private
+            </summary>
+        </member>
+        <member name="T:Backend.Models.TokenModel">
+            <summary>
+            Token returned after login
+            </summary>
+        </member>
+        <member name="P:Backend.Models.TokenModel.Token">
+            <summary>
+            JWT token generated after login
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Assets.PermissionType">
+            <summary>
+            Access permissions to different parts of this API.
+            Permissions can be combined.
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.PermissionType.None">
+            <summary>
+            No access
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.PermissionType.User">
+            <summary>
+            create and edit projects (most users have this, could safeguard this with email verification)
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.PermissionType.Accounts">
+            <summary>
+            view/edit/remove users
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.PermissionType.Public">
+            <summary>
+            edit website-wide relevant content
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.PermissionType.Content">
+            <summary>
+            edit assets and features
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.PermissionType.Admin">
+            <summary>
+            administrate user generated content
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.PermissionType.Files">
+            <summary>
+            separate since files may be either user-generated or content
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.PermissionType.Delete">
+            <summary>
+            avoid deletion of things under all cost to maintain backwards compatibility
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.PermissionType.All">
+            <summary>
+            Access to everything
+            </summary>
+        </member>
+        <member name="T:Backend.Models.Assets.VisibilityType">
+            <summary>
+            Outsider/Insider Access assets
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.VisibilityType.Public">
+            <summary>
+            Visible without user account
+            </summary>
+        </member>
+        <member name="F:Backend.Models.Assets.VisibilityType.Private">
+            <summary>
+            Need special access to view
+            </summary>
+        </member>
+        <member name="T:Backend.Models.UserModel">
+            <summary>
+            User description used to define content access and permissions
+            </summary>
+        </member>
+        <member name="P:Backend.Models.UserModel.Permissions">
+            <summary>
+            API permissions of this user
+            </summary>
+        </member>
+        <member name="P:Backend.Models.UserModel.AssetAccess">
+            <summary>
+            Assets this user has access to
+            </summary>
+        </member>
+        <member name="P:Backend.Models.UserModel.ProjectAccess">
+            <summary>
+            Projects this user has access to
+            </summary>
+        </member>
+        <member name="P:Backend.Models.UserModel.GroupAccess">
+            <summary>
+            Groups this user is part of
+            </summary>
+        </member>
+        <member name="T:Backend.Permissions">
+            <summary>
+            Permission attribute to define what users have permission to call certain API scopes.
+            </summary>
+        </member>
+        <member name="M:Backend.Permissions.#ctor(Backend.Models.Assets.PermissionType)">
+            
+        </member>
+        <member name="T:Backend.Utils">
+            <summary>
+            GEneral static utility class
+            </summary>
+        </member>
+        <member name="M:Backend.Utils.IncludeAll``1(System.Linq.IQueryable{``0})">
+            <summary>
+            Include all virtual properties in query.
+            </summary>
+            <assetparam name="T"></assetparam>
+            <param name="queryable"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Backend.Utils.FindInclude``1(System.Linq.IQueryable{``0},System.Int64)">
+            <summary>
+            Find entity asset by ID and include all virtual properties.
+            </summary>
+            <assetparam name="T"></assetparam>
+            <param name="queryable"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Backend.Utils.FindIncludeAsync``1(System.Linq.IQueryable{``0},System.Int64)">
+            <summary>
+            Find entity asset by ID and include all virtual properties.
+            </summary>
+            <assetparam name="T"></assetparam>
+            <param name="queryable"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Backend.Utils.FindUserForAccessAsync(System.Linq.IQueryable{Backend.Models.UserModel},System.Int64)">
+            <summary>
+            Find user by ID and include all properties and subproperties needed to determine access restrictions.
+            </summary>
+            <param name="queryable"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Backend.Utils.FindProjectForAccessAsync(System.Linq.IQueryable{Backend.Models.ProjectModel},System.Int64)">
+            <summary>
+            Find project by ID and include all properties and subproperties needed to determine access restrictions.
+            </summary>
+            <param name="queryable"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Backend.Utils.FindGroupForAccessAsync(System.Linq.IQueryable{Backend.Models.GroupModel},System.Int64)">
+            <summary>
+            Find group by ID and include all properties and subproperties needed to determine access restrictions.
+            </summary>
+            <param name="queryable"></param>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Backend.Utils.Includes``1(System.Collections.Generic.ICollection{``0},Backend.Models.EntityModel)">
+            <summary>
+            Check via ID whether an entity list contains another entity.
+            This is needed as objects with the same ID could be stored at different memory locations.
+            </summary>
+            <assetparam name="T"></assetparam>
+            <param name="collection"></param>
+            <param name="entity"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

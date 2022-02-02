@@ -1,0 +1,64 @@
+﻿@model CreateViewModel
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="row g-5 m-1">
+    <div style="width: 196px;">
+		<a id='backButton' href="#" hidden>
+			<i class="fs-2 bi bi-chevron-left text-white"></i>
+		</a>
+		<div id='assetList'>
+			<ul id='removeButton' class="nav list-group mb-1 mt-2" hidden>
+				<li href="#" onclick="window.OnAssetSelected(0)" class="btn btn-outline-dark d-flex lh-sm">
+					<div class="nav-link bg-dark rounded-pill">
+						<i class="bi bi-box text-muted"></i>
+					</div>
+					<h6 class="my-0 text-white align-self-center ms-2">None</h6>
+				</li>
+			</ul>
+			<ul id='assetContainer' class="nav list-group mb-3">
+				<!--assetItemTemplate-->
+				<!--assetItemTemplate-->
+				<!--assetItemTemplate-->
+			</ul>
+		</div>
+    </div>
+    <div style="width: 196px;">
+		<ul id='featureContainer' class="nav list-group mb-3">
+			<!--featureItem-->
+			<!--featureItem-->
+			<!--featureItem-->
+		</ul>
+    </div>
+    <div class="col">
+    </div>
+    <div class="col-2">
+    </div>
+</div>
+
+<template id='assetItemTemplate'>
+	<li id='assetitem{{Id}}' onclick="window.OnAssetSelected({{Id}})" class="btn btn-outline-secondary d-flex lh-sm">
+		<div class="nav-link bg-dark rounded-pill">
+			<i class="bi bi-box text-muted"></i>
+		</div>
+		<h6 class="my-0 text-white align-self-center ms-2">{{Name}}</h6>
+	</li>
+</template>
+
+<template id='featureItemTemplate'>
+	<li href="#" onclick="" class="btn btn-outline-secondary border-0 d-flex lh-sm" hidden>
+		<div class="nav-link bg-dark rounded-pill">
+			<i class="bi bi-pencil text-muted"></i>
+		</div>
+		<h6 class="my-0 text-white align-self-center ms-2">{{Name}}</h6>
+	</li>
+</template>
+
+<script>
+	$(window).on('load', () => window.OnLoadCategory(@(Model?.CategoryId ?? 0)));	
+</script>
+
+@section scripts {
+<script src="~/js/edit.js" type="module"></script>
+}

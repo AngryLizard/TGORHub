@@ -1,0 +1,62 @@
+﻿<form id='signupForm' class="needs-validation" novalidate onsubmit="return false">
+    <div class="form-floating mb-3">
+        <input type="text" class="form-control rounded-4 bg-secondary border-secondary bg-dark text-muted" id="signupUsername" placeholder="Jeff" required>
+        <label for="SignupUsername">Display Name</label>
+        <div class="valid-feedback">
+            Nice!
+        </div>
+        <div class="invalid-feedback">
+            Please define a display name, at least 3 letters.
+        </div>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="email" class="form-control rounded-4 bg-secondary border-secondary bg-dark text-muted" id="signupEmail" placeholder="name@example.com" required>
+        <label for="SignupEmail">Email address</label>
+        <div class="valid-feedback">
+            Nice!
+        </div>
+        <div class="invalid-feedback">
+            Please define a valid email address.
+        </div>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="password" class="form-control rounded-4 bg-secondary border-secondary bg-dark text-muted" id="signupPassword" placeholder="Password" required>
+        <label for="SignupPassword">Password</label>
+        <div class="valid-feedback">
+            Good!
+        </div>
+        <div class="invalid-feedback">
+            <h4 class="alert-heading">Not so fast!</h4>
+            <p>You may only enter with adequate protection:</p>
+            <ul>
+                    <li>At least 8 characters</li>
+                    <li>Lowercase and uppercase letters</li>
+                    <li>At least one number</li>
+                    <li>At least one special character: !"#$%&'()*+,-./:;<=>?@@[\]^_`{|}~</li>
+                    <!-- 
+                        Hello! We only validate passwords locally as we hash them before sending. 
+                        If you want to go through the effort of disabling the js code that checks 
+                        your password we trust you know what you're doing by setting a weaker one.
+                    -->
+            </ul>
+        </div>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="password" class="form-control rounded-4 bg-secondary border-secondary bg-dark text-muted" id="signupConfirm" placeholder="Password" required>
+        <label for="SignupConfirm">Password Confirmation</label>
+        <div class="valid-feedback">
+            Matching!
+        </div>
+        <div class="invalid-feedback">
+            Passwords don't match.
+        </div>
+    </div>
+
+    <div id='signUpWaitAlert' class="alert alert-info" role="alert" hidden>Signing up, please wait...</div>
+    <div id='signUpErrorAlert' class="alert alert-danger" role="alert" hidden>
+        <h4 class="alert-heading">Oh no!</h4> Failed to sign up.
+    </div>
+    <button class="btn btn-lg btn-primary w-100" type="submit" onclick="window.Register()">Sign Up</button>
+                        
+    <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
+</form>
